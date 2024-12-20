@@ -683,8 +683,8 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
                     numhetallele = stats[mononuclength][readmononuclength]["HET"]
                     lengthcomposition[mononuclength]['HET'] = lengthcomposition[mononuclength]['HET'] + numhetallele
                 numerror = 0
-                if "ERROR" in stats[mononuclength][readmononuclength].keys():
-                    numerror = stats[mononuclength][readmononuclength]["ERROR"]
+                if "LENGTHERROR" in stats[mononuclength][readmononuclength].keys():
+                    numerror = stats[mononuclength][readmononuclength]["LENGTHERROR"]
                     if readmononuclength > mononuclength:
                         lengthcomposition[mononuclength]['INSERROR'] = lengthcomposition[mononuclength]['INSERROR'] + numerror
                     elif readmononuclength < mononuclength:
@@ -693,9 +693,9 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
                 if "COMPLEX" in stats[mononuclength][readmononuclength].keys():
                     numcomplexallele = stats[mononuclength][readmononuclength]["COMPLEX"]
                     lengthcomposition[mononuclength]['COMPLEX'] = lengthcomposition[mononuclength]['COMPLEX'] + numcomplexallele
-                if "CLIPPED" in stats[mononuclength][readmononuclength].keys():
-                    numclippedallele = stats[mononuclength][readmononuclength]["CLIPPED"]
-                    lengthcomposition[mononuclength]['CLIPPED'] = lengthcomposition[mononuclength]['CLIPPED'] + numclippedallele
+                if "FLANKERROR" in stats[mononuclength][readmononuclength].keys():
+                    numflankallele = stats[mononuclength][readmononuclength]["FLANKERROR"]
+                    lengthcomposition[mononuclength]['FLANKERROR'] = lengthcomposition[mononuclength]['FLANKERROR'] + numflankallele
                 msfh.write(str(mononuclength) + "\t" + str(readmononuclength) + "\t" + str(numcorrect) + "\t" + str(numhetallele) + "\t" + str(numerror) + "\t" + str(numcomplexallele) + "\n")
 
     mononuccompfile = outputfiles["mononuccompositionfile"]
@@ -705,7 +705,7 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
     totalcomplex = 0
     totalinsertions = 0
     totaldeletions = 0
-    totalclipped = 0
+    totalflankerror = 0
     with open(mononuccompfile, "w") as mcfh:
         mcfh.write("BenchmarkLength\tNumCorrect\tNumHetAllele\tNumInsError\tNumDelError\tNumComplex\n")
         for mononuclength in sorted(stats.keys()):
@@ -713,7 +713,7 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
             totalcorrect = totalcorrect + lengthcomposition[mononuclength]['CORRECT']
             totalerror = totalerror + lengthcomposition[mononuclength]['INSERROR'] + lengthcomposition[mononuclength]['DELERROR']
             totalcomplex = totalcomplex + lengthcomposition[mononuclength]['COMPLEX']
-            totalclipped = totalcomplex + lengthcomposition[mononuclength]['CLIPPED']
+            totalflankerror = totalcomplex + lengthcomposition[mononuclength]['FLANKERROR']
             totalinsertions = totalinsertions + lengthcomposition[mononuclength]['INSERROR']
             totaldeletions = totaldeletions + lengthcomposition[mononuclength]['DELERROR']
 
@@ -726,14 +726,14 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
             accuracywithcomplex = str(int(totalcorrect/(totalcorrect + totalerror + totalcomplex)*1000)/10) + "%"
         else:
             accuracywithcomplex = "NA"
-        if totalcorrect + totalerror + totalclipped > 0:
-            accuracywithclipped = str(int(totalcorrect/(totalcorrect + totalerror + totalclipped)*1000)/10) + "%"
+        if totalcorrect + totalerror + totalflankerror > 0:
+            accuracywithflankerror = str(int(totalcorrect/(totalcorrect + totalerror + totalflankerror)*1000)/10) + "%"
         else:
-            accuracywithclipped = "NA"
-        if totalcorrect + totalerror + totalcomplex + totalclipped > 0:
-            accuracywithcomplexandclipped = str(int(totalcorrect/(totalcorrect + totalerror + totalcomplex + totalclipped)*1000)/10) + "%"
+            accuracywithflankerror = "NA"
+        if totalcorrect + totalerror + totalcomplex + totalflankerror > 0:
+            accuracywithcomplexandflankerror = str(int(totalcorrect/(totalcorrect + totalerror + totalcomplex + totalflankerror)*1000)/10) + "%"
         else:
-            accuracywithcomplexandclipped = "NA"
+            accuracywithcomplexandflankerror = "NA"
 
         if totaldeletions > 0:
             overcallundercallratio = str(int(100*totalinsertions/totaldeletions)/100) + "%"
@@ -741,8 +741,8 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
             overcallundercallratio = "NA"
         mofh.write("Percent accuracy of homopolymer runs of 10 or more bases (not counting read alleles that match the alternate haplotype or are complex): " + noncomplexaccuracy + "\n")
         mofh.write("Percent accuracy of homopolymer runs of 10 or more bases (including complex): " + accuracywithcomplex + "\n")
-        mofh.write("Percent accuracy of homopolymer runs of 10 or more bases (including clipped): " + accuracywithclipped + "\n")
-        mofh.write("Percent accuracy of homopolymer runs of 10 or more bases (including complex and clipped): " + accuracywithcomplexandclipped + "\n")
+        mofh.write("Percent accuracy of homopolymer runs of 10 or more bases (including flankerror): " + accuracywithflankerror + "\n")
+        mofh.write("Percent accuracy of homopolymer runs of 10 or more bases (including complex and flankerror): " + accuracywithcomplexandflankerror + "\n")
         mofh.write("Ratio of overcalled to undercalled homopolymer runs: " + overcallundercallratio + "\n")
             
 def write_read_error_summary(stats:dict, outputfiles:dict):

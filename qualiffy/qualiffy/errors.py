@@ -349,26 +349,51 @@ def assess_mononuc_read_coverage_require_flank(align_obj, refobj, mononucbedfile
             repeatedbase = namefields[-1]
             refalleleseq = repeatedbase * runlength
             readsforthismononuc = 0
+            # for each read, attempt to find read positions aligned to the bases immediately flanking
+            # the mononucleotide. If one side and/or the other has no aligning base (due either to a 
+            # deletion or to clipped sequence) then check for clipping beginning at that base, and
+            # extend the mononuc-aligned read sequence with clipped sequence to include adjacent 
+            # repeated bases plus 5 bp additional (this is NIST's so-called "slop" length).
+            # If a flanking base *does* have a read base aligned to it, also extend that end to 
+            # include repeated bases plut 5 bp slop.
             for readalign in align_obj.fetch(contig=chrom, start=int(start), stop=int(end)):
                 if max_reads_per_mononuc > 0 and readsforthismononuc >= max_reads_per_mononuc:
                     break
                 if args.downsample is not None and random.random() >= args.downsample:
                     continue
+                # query_sequence includes soft clipped bases:
                 queryseq = readalign.query_sequence
+                queryseq = queryseq.upper()
                 if readalign.is_secondary or queryseq is None:
                     continue
                 readname = readalign.query_name
-                if readalign.reference_start >= int(start) or readalign.reference_end <= int(end):
+                # if the read doesn't align to the entire mononucleotide, skip it:
+                if readalign.reference_start is None or readalign.reference_end is None:
+                    logger.debug("Read " + readname + " has no reference_start or reference_end for " + chrom + ":" + str(start) + "-" + str(end))
+                    continue
+                if readalign.reference_start > int(start) or readalign.reference_end < int(end):
+                    continue
+                # if the read doesn't align to the flanking bases, it must be clipped:
+                cigartuples = readalign.cigartuples
+                if ((readalign.reference_start == int(start) and cigartuples[0][0] != 4) or
+                    (readalign.reference_end == int(end) and cigartuples[len(cigartuples)-1][0] != 4)):
+                    logger.debug("Read " + readname + " aligns just to end of " + name + " but is not soft clipped--skipping")
                     continue
                 pairs = readalign.get_aligned_pairs()
                 if len(pairs) == 0:
                     continue
                 # find zero-based read pos of base aligned to ref base one before mononuc:
-                readstart = find_readpos_in_pairs(pairs, int(start)-1)
+                if readalign.reference_start < int(start):
+                    readstart = find_readpos_in_pairs(pairs, int(start)-1)
+                elif readalign.query_alignment_start > 0: # must be clipped--set start to one base before reference start:
+                    readstart = readalign.query_alignment_start - 1
                 # find zero-based read pos of base aligned to ref base one after mononuc:
-                readend = find_readpos_in_pairs(pairs, int(end))
+                if readalign.reference_end > int(end):
+                    readend = find_readpos_in_pairs(pairs, int(end))
+                elif readalign.query_alignment_end < len(queryseq):
+                    readend = readalign.query_alignment_end + 1
+
                 if readstart is not None and readend is not None:
-                    queryseq = queryseq.upper()
                     alleleseq = queryseq[readstart+1:readend]
                     # extend the read sequence so 5' and 3' to include all of repeated bases
                     #if readstart >=0:
@@ -386,7 +411,7 @@ def assess_mononuc_read_coverage_require_flank(align_obj, refobj, mononucbedfile
 
                     # check that read has 5 flanking base pairs on either side of the HP:
                     if readstart < 5 or readend > len(queryseq)-5:
-                        logger.debug("Skipping align of read " + readname + " which has fewer than 5 bp outside of HP repeat for " + name)
+                        logger.debug("Skipping align of read " + readname + " which has fewer than 5 bp outside of HP repeat for " + chrom + ":" + str(start) + "-" + str(end))
                         continue
                     else:
                         leftflankseq = queryseq[readstart-4:readstart+1]
@@ -408,7 +433,7 @@ def assess_mononuc_read_coverage_require_flank(align_obj, refobj, mononucbedfile
                             else:
                                 logger.debug(leftflankseq + "/" + rightflankseq + " doesnt match " + benchleftflankseq + "/" + benchrightflankseq)
                                 matchtype = "FLANKERROR"
-                    else: # discrepancies within the HP
+                    else: # discrepancies within the HP 
                         numbases = -1
                         matchtype = "COMPLEX"
 
@@ -421,7 +446,7 @@ def assess_mononuc_read_coverage_require_flank(align_obj, refobj, mononucbedfile
                         mononucdict[runlength][numbases][matchtype] = mononucdict[runlength][numbases][matchtype] + 1
                     readsforthismononuc = readsforthismononuc + 1
                 else:
-                    logger.debug(readname + " is unaligned at one endpoint of interval " + str(start) + " to " + str(end) + "!")
+                    logger.debug(readname + " is unaligned at one endpoint of interval " + str(start) + " to " + str(end) + " and has fewer than 5 clipped bases!")
                     if readstart is None:
                         logger.warning(readname + " " + str(readalign.reference_start) + "-" + str(readalign.reference_end) + " does not have a start")
                     if readend is None:
