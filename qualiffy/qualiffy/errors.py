@@ -429,6 +429,7 @@ def assess_mononuc_read_coverage_require_flank(align_obj, refobj, mononucbedfile
 
             mononucline = mfh.readline()
 
+    return mononucdict
 
 # "pairs" is a structure created by pysam for an alignment, and contains a list
 #   of tuples "consisting of the 0-based offset from the start of the read 
