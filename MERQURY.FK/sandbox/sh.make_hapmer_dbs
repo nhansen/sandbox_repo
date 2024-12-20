@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export PATH=/data/Phillippy/tools/FASTK/FASTKv1.0.0/FASTK-1.0.0:$PATH
+
+Logex -T2 -h 'matnotpat = A-B' v1_1_mat v1_1_pat
+Logex -T2 -h 'patnotmat = A-B' v1_1_pat v1_1_mat
+

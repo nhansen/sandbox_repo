@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export PATH=/data/Phillippy/tools/FASTK/FASTKv1.0.0/FASTK-1.0.0:/data/Phillippy/projects/HG002_diploid/benchmarking/github/MERQURY.FK/MERQURY.FK-1.1.0:$PATH
+
+export ASSEMBLY=$1
+export PREFIX=$2
+
+PhaseBlocks -v -T2 -k v1_1.ktab matnotpat patnotmat $ASSEMBLY $PREFIX
+

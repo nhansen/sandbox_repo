@@ -1,0 +1,14 @@
+4 arguments: Found assignment in arg 2.
+About to malloc 1 assignment pointers and 2 table pointers.
+Done allocating pointers.
+Logex: Successfully opened table stream v1_1_mat
+Logex: Successfully opened table stream v1_1_pat
+About to go to kmer entry t=1
+Finished kmer entry t=1
+4 arguments: Found assignment in arg 2.
+About to malloc 1 assignment pointers and 2 table pointers.
+Done allocating pointers.
+Logex: Successfully opened table stream v1_1_pat
+Logex: Successfully opened table stream v1_1_mat
+About to go to kmer entry t=1
+Finished kmer entry t=1

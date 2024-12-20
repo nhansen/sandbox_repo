@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export FASTA=$1
+export KMERDBNAME=$2
+
+export PATH=/data/Phillippy/tools/FASTK/FASTKv1.0.0/FASTK-1.0.0:$PATH
+
+FastK -T2 -M15 -N./$KMERDBNAME -p -t1 -v $FASTA

@@ -1,0 +1,4 @@
+[console_scripts]
+gethets = qualiffy.gethets:main
+qualiffy = qualiffy.bench:main
+readbench = qualiffy.readbench:main

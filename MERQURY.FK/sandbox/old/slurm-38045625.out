@@ -1,0 +1,24 @@
+
+ Single diploid assembly with trio data
+
+ Kmer size is 40
+
+ Solid k-mer cutoff is 1
+
+ Making .qv and .bed files for assembly hprc_hg002_curated
+
+ Computing completeness stats for assembly hprc_hg002_curated
+4 arguments: Found assignment in arg 2.
+About to malloc 1 assignment pointers and 2 table pointers.
+Done allocating pointers.
+Logex: Successfully opened table stream ._MQY_A1.QS8mWQ
+Logex: Successfully opened table stream v1_1
+About to go to kmer entry t=1
+Finished kmer entry t=1
+
+ Producing relative profiles for phasing block calculation on hprc_hg002_curated
+
+ Computing phasing blocks for assemlby hprc_hg002_curated
+
+ Sorting phase block and assembly sizes for hprc_hg002_curated
+

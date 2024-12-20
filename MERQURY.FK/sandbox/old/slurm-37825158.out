@@ -1,0 +1,47 @@
+
+Partitioning 1 .fasta file into 2 parts
+
+Determining minimizer scheme & partition for hprc_hg002_curated_mat
+  Estimate 3.062G 40-mers
+  Dividing data into 3 blocks
+  Using 5-minimizers with 1024 core prefixes
+
+Phase 1: Partitioning K-mers into 6 Super-mer Files
+
+    0%    1%    2%    3%    4%    5%    6%    7%    8%    9%   10%   11%   12%   13%   14%   15%   16%   17%   18%   19%   20%   21%   22%   24%   25%   26%   27%   28%   29%   30%   31%   32%   33%   34%   35%   36%   37%   38%   39%   40%   41%   42%   43%   44%   45%   47%   48%   49%   50%   51%   52%   53%   54%   55%   56%   57%   58%   59%   60%   61%   62%   63%   64%   65%   66%   67%   68%   70%   71%   72%   73%   74%   75%   76%   77%   78%   79%   80%   81%   82%   83%   84%   85%   86%   87%   88%   89%   90%   91%   93%   94%   95%   96%   97%   98%   99%  100%  101%           There are 355 reads totalling 3,061,735,012 bps
+
+     Part:         40-mer   super-mers  ave. length
+        0:  1,060,231,544   49,871,052         21.3
+        1:    987,821,608   67,963,124         14.5
+        2:  1,012,153,686   62,815,075         16.1
+      Sum:  3,060,206,838  180,649,251         16.9
+
+      Range 987,821,608 - 1,060,231,544 (7.07%)
+
+  Resources for phase:  44.355u  3.077s  28.213w  168.1%
+
+Phase 2: Sorting & Counting K-mers in 3 blocks
+
+  Processing block 1: Sorting super-mers       Processing block 1: Sorting weighted k-mers  Processing block 1: Inverse profile sorting  Processing block 2: Sorting super-mers       Processing block 2: Sorting weighted k-mers  Processing block 2: Inverse profile sorting  Processing block 3: Sorting super-mers       Processing block 3: Sorting weighted k-mers  Processing block 3: Inverse profile sorting                                                     Part:   wgt'd k-mers  savings
+         0:    988,372,870      1.1
+         1:    893,683,123      1.1
+         2:    923,425,698      1.1
+       All:  2,805,481,691      1.1
+
+  Resources for phase:  6:34.315u  39.542s  3:49.212w  189.3%
+
+Phase 3 (-t option): Merging K-mer Table Parts
+
+    0%   14%   29%   43%   58%   73%   87%           There are 2,616,904,852 40-mers that occur 1-or-more times
+
+  The table occupies 23.69 GB
+
+  Resources for phase:  1:12.054u  32.890s  1:02.322w  168.4%
+
+Phase 4 (-p option): Merging Profile Fragments
+
+    0%    1%    2%    3%    4%    5%    6%    7%    8%    9%   10%   11%   12%   13%   14%   15%   16%   17%   18%   19%   20%   21%   22%   23%   24%   25%   26%   27%   28%   29%   30%   31%   32%   33%   34%   35%   36%   37%   38%   39%   40%   41%   42%   43%   44%   45%   46%   47%   48%   49%   50%   51%   52%   53%   54%   55%   56%   57%   58%   59%   60%   61%   62%   63%   64%   65%   66%   67%   68%   69%   70%   71%   72%   73%   74%   75%   76%   77%   78%   79%   80%   81%   82%   83%   84%   85%   86%   87%   88%   89%   90%   91%   92%   93%   94%   95%   96%   97%   98%   99%  125%           The profiles occupy 470.45 MB
+
+  Resources for phase:  5.767u  1.098s  4.143w  165.7%
+
+Total Resources:  8:36.492u  1:16.608s  5:23.891w  183.1%  21MB

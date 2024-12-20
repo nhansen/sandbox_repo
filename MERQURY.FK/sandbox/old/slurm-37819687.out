@@ -1,0 +1,10 @@
+4 arguments: Found assignment in arg 2.
+About to malloc 1 assignment pointers and 2 table pointers.
+Done allocating pointers.
+Logex: Successfully opened table stream v1_1_mat
+Logex: Successfully opened table stream v1_1_pat
+4 arguments: Found assignment in arg 2.
+About to malloc 1 assignment pointers and 2 table pointers.
+Done allocating pointers.
+Logex: Successfully opened table stream v1_1_pat
+Logex: Successfully opened table stream v1_1_mat
