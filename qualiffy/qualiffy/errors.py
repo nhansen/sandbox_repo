@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import random
@@ -322,6 +323,11 @@ def assess_mononuc_read_coverage_require_flank(align_obj, refobj, mononucbedfile
 
     mononucstatsfile = outputdict["mononucstatsfile"]
 
+    # if the file already exists, don't recreate it
+    if os.path.exists(mononucstatsfile):
+        mononucdict = retrieve_stats_from_mononucstats_file(mononucstatsfile)
+        return mononucdict
+
     mononucbedintervals = pybedtools.BedTool(mononucbedfile)
     if bedintervals is not None:
         includedmononucbeds = bedtoolslib.intersectintervals(mononucbedintervals, bedintervals, wa=True)
@@ -453,6 +459,30 @@ def assess_mononuc_read_coverage_require_flank(align_obj, refobj, mononucbedfile
                         logger.warning(readname + " " + str(readalign.reference_start) + "-" + str(readalign.reference_end) + " does not have a end")
 
             mononucline = mfh.readline()
+
+    return mononucdict
+
+def retrieve_stats_from_mononucstats_file(filename)->dict:
+    mononucdict = {}
+
+    with open(filename, "r") as sfh:
+        statline = sfh.readline()
+        while statline:
+            statline = statline.rstrip()
+            [chrom, start, end, readname, repeatedbase, runlength, numbases, matchtype] = statline.split("\t")
+            start = int(start)
+            end = int(end)
+            runlength = int(runlength)
+            if runlength not in mononucdict:
+                mononucdict[runlength] = {}
+            numbases = int(numbases)
+            if numbases not in mononucdict[runlength]:
+                mononucdict[runlength][numbases] = {}
+            if matchtype not in mononucdict[runlength][numbases]:
+                mononucdict[runlength][numbases][matchtype] = 1
+            else:
+                mononucdict[runlength][numbases][matchtype] = mononucdict[runlength][numbases][matchtype] + 1
+            statline = sfh.readline()
 
     return mononucdict
 

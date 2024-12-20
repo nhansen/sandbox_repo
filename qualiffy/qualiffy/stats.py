@@ -672,7 +672,7 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
     with open(histogramfile, "w") as msfh:
         msfh.write("BenchmarkLength\tReadLength\tNumCorrect\tNumHetAllele\tNumError\tNumComplex\n")
         for mononuclength in sorted(stats.keys()):
-            lengthcomposition[mononuclength] = {'CORRECT':0, 'HET':0, 'INSERROR':0, 'DELERROR':0, 'COMPLEX':0, 'CLIPPED':0}
+            lengthcomposition[mononuclength] = {'CORRECT':0, 'HET':0, 'INSERROR':0, 'DELERROR':0, 'COMPLEX':0, 'FLANKERROR':0}
             for readmononuclength in sorted(stats[mononuclength].keys()):
                 numcorrect = 0
                 if "CORRECT" in stats[mononuclength][readmononuclength].keys():
@@ -713,7 +713,7 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
             totalcorrect = totalcorrect + lengthcomposition[mononuclength]['CORRECT']
             totalerror = totalerror + lengthcomposition[mononuclength]['INSERROR'] + lengthcomposition[mononuclength]['DELERROR']
             totalcomplex = totalcomplex + lengthcomposition[mononuclength]['COMPLEX']
-            totalflankerror = totalcomplex + lengthcomposition[mononuclength]['FLANKERROR']
+            totalflankerror = totalflankerror + lengthcomposition[mononuclength]['FLANKERROR']
             totalinsertions = totalinsertions + lengthcomposition[mononuclength]['INSERROR']
             totaldeletions = totaldeletions + lengthcomposition[mononuclength]['DELERROR']
 
@@ -736,7 +736,7 @@ def write_read_mononuc_stats(stats:dict, outputfiles:dict, args):
             accuracywithcomplexandflankerror = "NA"
 
         if totaldeletions > 0:
-            overcallundercallratio = str(int(100*totalinsertions/totaldeletions)/100) + "%"
+            overcallundercallratio = str(int(100*totalinsertions/totaldeletions)/100)
         else:
             overcallundercallratio = "NA"
         mofh.write("Percent accuracy of homopolymer runs of 10 or more bases (not counting read alleles that match the alternate haplotype or are complex): " + noncomplexaccuracy + "\n")
